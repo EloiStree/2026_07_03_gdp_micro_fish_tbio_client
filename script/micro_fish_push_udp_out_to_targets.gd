@@ -16,10 +16,26 @@ func push_text_to_targets(text_to_send_utf8: String):
 
 func push_bytes_to_targets(bytes_to_send: PackedByteArray, bool_is_text: bool = false):
 	for target in list_targets_ipv4:
-		udp_socket.connect_to_host(target, port_for_text if bool_is_text else port_for_bytes)
-		udp_socket.put_packet(bytes_to_send)
-		udp_socket.close()
+		if is_valide_ipv4_address(target):
+			udp_socket.set_dest_address(target, port_for_text if bool_is_text else port_for_bytes)
+			udp_socket.put_packet(bytes_to_send)
 
+
+func is_valide_ipv4_address(ipv4_address: String) -> bool:
+	var regex = RegEx.new()
+	regex.compile(r"^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$")
+	return regex.search(ipv4_address) != null
+
+
+func set_target_from_text(target_ipv4: String):
+	if target_ipv4.contains(","):
+		var targets = target_ipv4.split(",")
+		list_targets_ipv4 = []
+		for target in targets:
+			list_targets_ipv4.append(target)
+		
+	else:
+		list_targets_ipv4 = [target_ipv4]
 
 func push_random_text_and_byte():
 	push_random_string()

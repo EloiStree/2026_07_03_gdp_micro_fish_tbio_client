@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://bya86h4uvfpnl" path="res://addons/2026_07_03_gdp_micro_fish_tbio_client/script/micro_fish_listen_thread_udp_text.gd" id="2_s2do8"]
 [ext_resource type="Script" uid="uid://bjadg744sf2of" path="res://addons/2026_07_03_gdp_micro_fish_tbio_client/script/micro_fish_push_udp_out_to_targets.gd" id="3_edgoj"]
 [ext_resource type="Script" uid="uid://ctvfwsy4t7fdj" path="res://addons/2026_07_03_gdp_micro_fish_tbio_client/script/micro_fish_byte_to_text_debug.gd" id="4_trsir"]
+[ext_resource type="Script" uid="uid://bsng4erlmh82d" path="res://addons/2026_07_03_gdp_micro_fish_tbio_client/script/micro_fish_input_field_saved_at_change.gd" id="5_s2do8"]
 
 [node name="DemoAquarium" type="Node3D" unique_id=452249124]
 
@@ -43,7 +44,18 @@ script = ExtResource("4_trsir")
 layout_mode = 2
 text = "s"
 
+[node name="LineEdit" type="LineEdit" parent="CanvasLayer/VBoxContainer" unique_id=476166063]
+layout_mode = 2
+text = "127.0.0.1"
+
+[node name="MicroFishInputFieldSavedAtChange" type="Node" parent="CanvasLayer/VBoxContainer/LineEdit" unique_id=1311829894 node_paths=PackedStringArray("input_field")]
+script = ExtResource("5_s2do8")
+input_field = NodePath("..")
+metadata/_custom_type_script = "uid://bsng4erlmh82d"
+
 [connection signal="on_message_received" from="MicroFishUdpThreadDispatcherByte" to="CanvasLayer/VBoxContainer/Label/Code To UI" method="push_byte_packed_to_debug"]
 [connection signal="message_received" from="MicroFishUdpThreadDispatcherUtf8" to="CanvasLayer/VBoxContainer/Label2" method="set_text"]
 [connection signal="timeout" from="MicroFishPushUdpOutToTargets/Timer" to="MicroFishPushUdpOutToTargets" method="push_random_text_and_byte"]
 [connection signal="on_debug_last_byte_packed" from="CanvasLayer/VBoxContainer/Label/Code To UI" to="CanvasLayer/VBoxContainer/Label" method="set_text"]
+[connection signal="on_input_field_text_changed" from="CanvasLayer/VBoxContainer/LineEdit/MicroFishInputFieldSavedAtChange" to="MicroFishPushUdpOutToTargets" method="set_target_from_text"]
+[connection signal="on_input_field_text_reloaded" from="CanvasLayer/VBoxContainer/LineEdit/MicroFishInputFieldSavedAtChange" to="MicroFishPushUdpOutToTargets" method="set_target_from_text"]
