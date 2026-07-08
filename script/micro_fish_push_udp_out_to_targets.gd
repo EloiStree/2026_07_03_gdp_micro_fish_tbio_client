@@ -21,11 +21,18 @@ func push_bytes_to_targets(bytes_to_send: PackedByteArray, bool_is_text: bool = 
 		udp_socket.close()
 
 
-func push_random_character():
-	var random_char = char(randi() % 256)
-	var bytes_to_send = PackedByteArray()
-	bytes_to_send.append(random_char)
-	push_bytes_to_targets(bytes_to_send, true)
+func push_random_text_and_byte():
+	push_random_string()
+	push_random_integer()
+
+
+const STRING_RANDOM="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+func push_random_string( text_length: int = 10):
+	var random_string = ""
+	for i in range(text_length):
+		random_string += String(STRING_RANDOM[randi() % STRING_RANDOM.length()]) # Generate random characters from STRING_RANDOM	
+	push_text_to_targets(random_string)
+
 	
 	
 func push_random_integer():

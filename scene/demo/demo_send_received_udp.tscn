@@ -1,0 +1,49 @@
+[gd_scene format=3 uid="uid://b4qa61oabixr"]
+
+[ext_resource type="Script" uid="uid://yxfimt0e7o0b" path="res://addons/2026_07_03_gdp_micro_fish_tbio_client/script/micro_fish_listen_thread_udp_byte.gd" id="1_1iwyl"]
+[ext_resource type="Script" uid="uid://bya86h4uvfpnl" path="res://addons/2026_07_03_gdp_micro_fish_tbio_client/script/micro_fish_listen_thread_udp_text.gd" id="2_s2do8"]
+[ext_resource type="Script" uid="uid://bjadg744sf2of" path="res://addons/2026_07_03_gdp_micro_fish_tbio_client/script/micro_fish_push_udp_out_to_targets.gd" id="3_edgoj"]
+[ext_resource type="Script" uid="uid://ctvfwsy4t7fdj" path="res://addons/2026_07_03_gdp_micro_fish_tbio_client/script/micro_fish_byte_to_text_debug.gd" id="4_trsir"]
+
+[node name="DemoAquarium" type="Node3D" unique_id=452249124]
+
+[node name="MicroFishUdpThreadDispatcherByte" type="Node" parent="." unique_id=1670142008]
+script = ExtResource("1_1iwyl")
+metadata/_custom_type_script = "uid://yxfimt0e7o0b"
+
+[node name="MicroFishUdpThreadDispatcherUtf8" type="Node" parent="." unique_id=938891560]
+script = ExtResource("2_s2do8")
+metadata/_custom_type_script = "uid://bya86h4uvfpnl"
+
+[node name="MicroFishPushUdpOutToTargets" type="Node" parent="." unique_id=1842172871]
+script = ExtResource("3_edgoj")
+list_targets_ipv4 = Array[String](["192.168.137.1", "192.168.1.1", "127.0.0.1"])
+metadata/_custom_type_script = "uid://bjadg744sf2of"
+
+[node name="Timer" type="Timer" parent="MicroFishPushUdpOutToTargets" unique_id=187369541]
+autostart = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=2069609174]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer" unique_id=490299005]
+anchors_preset = -1
+anchor_right = 0.38500002
+anchor_bottom = 0.36100003
+offset_right = -0.52001953
+offset_bottom = 0.07197571
+
+[node name="Label" type="Label" parent="CanvasLayer/VBoxContainer" unique_id=263572653]
+layout_mode = 2
+text = "b"
+
+[node name="Code To UI" type="Node" parent="CanvasLayer/VBoxContainer/Label" unique_id=33423476]
+script = ExtResource("4_trsir")
+
+[node name="Label2" type="Label" parent="CanvasLayer/VBoxContainer" unique_id=1291372816]
+layout_mode = 2
+text = "s"
+
+[connection signal="on_message_received" from="MicroFishUdpThreadDispatcherByte" to="CanvasLayer/VBoxContainer/Label/Code To UI" method="push_byte_packed_to_debug"]
+[connection signal="message_received" from="MicroFishUdpThreadDispatcherUtf8" to="CanvasLayer/VBoxContainer/Label2" method="set_text"]
+[connection signal="timeout" from="MicroFishPushUdpOutToTargets/Timer" to="MicroFishPushUdpOutToTargets" method="push_random_text_and_byte"]
+[connection signal="on_debug_last_byte_packed" from="CanvasLayer/VBoxContainer/Label/Code To UI" to="CanvasLayer/VBoxContainer/Label" method="set_text"]
